@@ -1,0 +1,26 @@
+{
+  "name": "umzug-contentful",
+  "version": "1.0.0",
+  "description": "Umzug custom storage provider that stores migration data in Contentful",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rouanw/umzug-contentful.git"
+  },
+  "keywords": [
+    "umzug",
+    "contentful",
+    "migration",
+    "migrate",
+    "sequelize"
+  ],
+  "author": "rouanw",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rouanw/umzug-contentful/issues"
+  },
+  "homepage": "https://github.com/rouanw/umzug-contentful#readme"
+}
