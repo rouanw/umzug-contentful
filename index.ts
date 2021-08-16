@@ -31,11 +31,6 @@ export class ContentfulStorage {
         return entries.items[0];
     }
 
-    private async getMigrationState() : Promise<string[]> {
-        const entry = await this.getMigrationStateEntry();
-        return entry.fields.migrationData['en-US'];
-    }
-
     private async saveMigrationState(migrationState: string[]) {
         const migrationStateEntry : Entry = await this.getMigrationStateEntry();
         migrationStateEntry.fields.migrationData['en-US'] = migrationState;
@@ -43,18 +38,19 @@ export class ContentfulStorage {
     }
 
     async logMigration({ name: migrationName }: { name: string }) : Promise<void> {
-        const migrationState = await this.getMigrationState();
+        const migrationState = await this.executed();
         const newMigrationState = [...migrationState, migrationName];
         await this.saveMigrationState(newMigrationState);
     }
 
     async unlogMigration({ name: migrationName }: {name: string}) : Promise<void> {
-        const migrationState = await this.getMigrationState();
+        const migrationState = await this.executed();
         const updatedMigrations = migrationState.filter(name => name !== migrationName);
         await this.saveMigrationState(updatedMigrations);
     }
 
     async executed() : Promise<string[]> {
-        return this.getMigrationState();
+        const entry = await this.getMigrationStateEntry();
+        return entry.fields.migrationData['en-US'];
     }
 }
