@@ -9,17 +9,23 @@ describe('ContentfulStorage', () => {
     };
 
     describe('logMigration', () => {
-        beforeEach(async () => {
+        const initContentfulEntry = async (content: string[] = []) => {
             const entry = await getEntry();
-            entry.fields.migrationData['en-US'] = [];
+            entry.fields.migrationData['en-US'] = content;
             await entry.update();
-        });
+        }
 
         const storage = new ContentfulStorage(env);
 
-        test('adds entry', async () => {
+        test('adds a migration entry', async () => {
+            await initContentfulEntry();
             await storage.logMigration({ name: 'm1.txt' });
             expect(await getMigrationDataFromStorage()).toEqual(['m1.txt']);
+        });
+        test('adds more than one migration entry', async () => {
+            await initContentfulEntry(['00.txt']);
+            await storage.logMigration({ name: 'm1.txt' });
+            expect(await getMigrationDataFromStorage()).toEqual(['00.txt', 'm1.txt']);
         });
         // test(`doesn't dedupe`, async () => {
         //     await storage.logMigration({ name: 'm1.txt' });
