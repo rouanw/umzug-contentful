@@ -1,6 +1,6 @@
 import {createClient} from 'contentful-management';
 import {Entry} from "contentful-management/types";
-import {ContentfulEnvironmentAPI} from "contentful-management/dist/typings/create-environment-api";
+import {getEntry} from "./lib/contentful";
 
 export interface ContentfulUmzugOptions {
     spaceId: string;
@@ -23,26 +23,12 @@ export class ContentfulStorage {
         this.spaceId = spaceId;
     }
 
-    private static async getEntry(environment: ContentfulEnvironmentAPI, contentTypeId: string): Promise<Entry> {
-        const entries = await environment.getEntries({content_type: contentTypeId});
-        if (entries.items.length === 1) {
-            return entries.items[0];
-        }
-        const entry = await environment.createEntry(contentTypeId, {
-            fields: {
-                migrationData: {'en-US': []}
-            }
-        });
-        await entry.publish();
-        return entry;
-    }
-
     private async getContentfulEntryWithLoggedMigrations() : Promise<Entry> {
         const space = await this.client.getSpace(this.spaceId);
         const environment = await space.getEnvironment(this.environmentId);
         const contentTypes = await environment.getContentTypes({name: this.MIGRATION_CONTENT_TYPE});
         const contentType = contentTypes.items[0];
-        return ContentfulStorage.getEntry(environment, contentType.sys.id);
+        return getEntry(environment, contentType.sys.id);
     }
 
     private async updateLoggedMigrations(migrations: string[]) {
