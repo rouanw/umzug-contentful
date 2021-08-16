@@ -33,6 +33,13 @@ describe('ContentfulStorage', () => {
             await storage.logMigration({ name: 'm1.txt' });
             expect(await getMigrationDataFromStorage()).toEqual(['m1.txt', 'm1.txt']);
         });
+        test('copes when there is no contentful entry for logged migrations', async () => {
+            const entry = await getEntry();
+            await entry.unpublish();
+            await entry.delete();
+            await storage.logMigration({name: 'm1.txt'});
+            expect(await getMigrationDataFromStorage()).toEqual(['m1.txt']);
+        });
     });
 
     describe('unlogMigration', () => {
