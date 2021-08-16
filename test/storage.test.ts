@@ -1,10 +1,12 @@
 import { ContentfulStorage } from '..';
 import getEntry from "../lib/init";
+import env from '../.env.json';
 
 describe('ContentfulStorage', () => {
-    const json = (migrations: string[]) => JSON.stringify(migrations, null, 2);
-
-    let client;
+    const getMigrationDataFromStorage = async () => {
+        const entry = await getEntry();
+        return entry.fields.migrationData['en-US'];
+    };
 
     describe('logMigration', () => {
         beforeEach(async () => {
@@ -13,17 +15,12 @@ describe('ContentfulStorage', () => {
             await entry.update();
         });
 
-        test('bla', () => { jest.setTimeout(20000); expect(1).toEqual(1) });
+        const storage = new ContentfulStorage(env);
 
-        // const storage = new ContentfulStorage(env);
-        //
-        // test('adds entry', async () => {
-        //     await storage.logMigration({ name: 'm1.txt' });
-        //
-        //     expect(syncer.read()).toEqual({
-        //         'umzug.json': json(['m1.txt']),
-        //     });
-        // });
+        test('adds entry', async () => {
+            await storage.logMigration({ name: 'm1.txt' });
+            expect(await getMigrationDataFromStorage()).toEqual(['m1.txt']);
+        });
         // test(`doesn't dedupe`, async () => {
         //     await storage.logMigration({ name: 'm1.txt' });
         //     await storage.logMigration({ name: 'm1.txt' });
