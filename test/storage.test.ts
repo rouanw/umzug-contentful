@@ -27,14 +27,11 @@ describe('ContentfulStorage', () => {
             await storage.logMigration({ name: 'm1.txt' });
             expect(await getMigrationDataFromStorage()).toEqual(['00.txt', 'm1.txt']);
         });
-        // test(`doesn't dedupe`, async () => {
-        //     await storage.logMigration({ name: 'm1.txt' });
-        //     await storage.logMigration({ name: 'm1.txt' });
-        //
-        //     expect(syncer.read()).toEqual({
-        //         'umzug.json': json(['m1.txt', 'm1.txt']),
-        //     });
-        // });
+        test(`doesn't dedupe`, async () => {
+            await storage.logMigration({ name: 'm1.txt' });
+            await storage.logMigration({ name: 'm1.txt' });
+            expect(await getMigrationDataFromStorage()).toEqual(['m1.txt', 'm1.txt']);
+        });
     });
 /*
     describe('unlogMigration', () => {
