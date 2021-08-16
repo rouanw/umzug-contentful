@@ -12,7 +12,6 @@ export class ContentfulStorage {
     private client;
     private readonly environmentId: string;
     private readonly spaceId: string;
-    private MIGRATION_CONTENT_TYPE = 'Umzug Migration';
 
     constructor({ spaceId, environmentId, contentfulManagementToken }: ContentfulUmzugOptions) {
         this.client = createClient({
@@ -26,9 +25,7 @@ export class ContentfulStorage {
     private async getContentfulEntryWithLoggedMigrations() : Promise<Entry> {
         const space = await this.client.getSpace(this.spaceId);
         const environment = await space.getEnvironment(this.environmentId);
-        const contentTypes = await environment.getContentTypes({name: this.MIGRATION_CONTENT_TYPE});
-        const contentType = contentTypes.items[0];
-        return getEntry(environment, contentType.sys.id);
+        return getEntry(environment);
     }
 
     private async updateLoggedMigrations(migrations: string[]) {

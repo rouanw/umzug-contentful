@@ -53,12 +53,21 @@ async function getOrCreateMigrationEntry(environment: ContentfulEnvironmentAPI, 
     return entry;
 }
 
-export default async () : Promise<Entry> => {
+async function getEnvironment() {
     const client = createClient({
         accessToken: env.contentfulManagementToken,
     });
     const space = await client.getSpace(env.spaceId);
-    const environment = await space.getEnvironment(env.environmentId);
+    return space.getEnvironment(env.environmentId);
+}
+
+export async function getEntry() {
+    const environment = await getEnvironment();
     const contentType = await getOrCreateMigrationContentType(environment);
     return getOrCreateMigrationEntry(environment, contentType);
+}
+
+export async function getContentType() {
+    const environment = await getEnvironment();
+    return getOrCreateMigrationContentType(environment);
 }

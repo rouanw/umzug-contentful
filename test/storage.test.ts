@@ -1,5 +1,5 @@
 import { ContentfulStorage } from '..';
-import getEntry from "../lib/init";
+import { getEntry, getContentType } from "../lib/init";
 import env from '../.env.json';
 
 describe('ContentfulStorage', () => {
@@ -37,6 +37,16 @@ describe('ContentfulStorage', () => {
             const entry = await getEntry();
             await entry.unpublish();
             await entry.delete();
+            await storage.logMigration({name: 'm1.txt'});
+            expect(await getMigrationDataFromStorage()).toEqual(['m1.txt']);
+        });
+        test('copes when there is no contentful content type for logged migrations', async () => {
+            const entry = await getEntry();
+            await entry.unpublish();
+            await entry.delete();
+            const contentType = await getContentType();
+            await contentType.unpublish();
+            await contentType.delete();
             await storage.logMigration({name: 'm1.txt'});
             expect(await getMigrationDataFromStorage()).toEqual(['m1.txt']);
         });
