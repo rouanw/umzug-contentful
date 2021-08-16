@@ -16,7 +16,7 @@ export class ContentfulStorage {
   constructor({ spaceId, environmentId, contentfulManagementToken }: ContentfulUmzugOptions) {
     this.client = createClient({
       space: spaceId,
-      accessToken: contentfulManagementToken
+      accessToken: contentfulManagementToken,
     });
     this.environmentId = environmentId;
     this.spaceId = spaceId;
@@ -42,7 +42,7 @@ export class ContentfulStorage {
 
   async unlogMigration({ name: migrationName }: { name: string }): Promise<void> {
     const loggedMigrations = await this.executed();
-    const updatedMigrations = loggedMigrations.filter(name => name !== migrationName);
+    const updatedMigrations = loggedMigrations.filter((name) => name !== migrationName);
     await this.updateLoggedMigrations(updatedMigrations);
   }
 
