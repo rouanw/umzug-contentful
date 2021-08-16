@@ -54,7 +54,7 @@ export class ContentfulStorage {
         await this.saveMigrationState(updatedMigrations);
     }
 
-    async executed() {
+    async executed() : Promise<string[]> {
         return this.getMigrationState();
     }
 }
