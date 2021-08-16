@@ -22,7 +22,7 @@ export class ContentfulStorage {
         this.spaceId = spaceId;
     }
 
-    private async getMigrationStateEntry() : Promise<Entry> {
+    private async getContentfulEntryWithLoggedMigrations() : Promise<Entry> {
         const space = await this.client.getSpace(this.spaceId);
         const environment = await space.getEnvironment(this.environmentId);
         const contentTypes = await environment.getContentTypes({name: this.MIGRATION_CONTENT_TYPE});
@@ -31,26 +31,26 @@ export class ContentfulStorage {
         return entries.items[0];
     }
 
-    private async saveMigrationState(migrationState: string[]) {
-        const migrationStateEntry : Entry = await this.getMigrationStateEntry();
-        migrationStateEntry.fields.migrationData['en-US'] = migrationState;
-        await migrationStateEntry.update();
+    private async updateLoggedMigrations(migrations: string[]) {
+        const loggedMigrationsEntry : Entry = await this.getContentfulEntryWithLoggedMigrations();
+        loggedMigrationsEntry.fields.migrationData['en-US'] = migrations;
+        await loggedMigrationsEntry.update();
     }
 
     async logMigration({ name: migrationName }: { name: string }) : Promise<void> {
-        const migrationState = await this.executed();
-        const newMigrationState = [...migrationState, migrationName];
-        await this.saveMigrationState(newMigrationState);
+        const loggedMigrations = await this.executed();
+        const updatedMigrations = [...loggedMigrations, migrationName];
+        await this.updateLoggedMigrations(updatedMigrations);
     }
 
     async unlogMigration({ name: migrationName }: {name: string}) : Promise<void> {
-        const migrationState = await this.executed();
-        const updatedMigrations = migrationState.filter(name => name !== migrationName);
-        await this.saveMigrationState(updatedMigrations);
+        const loggedMigrations = await this.executed();
+        const updatedMigrations = loggedMigrations.filter(name => name !== migrationName);
+        await this.updateLoggedMigrations(updatedMigrations);
     }
 
     async executed() : Promise<string[]> {
-        const entry = await this.getMigrationStateEntry();
+        const entry = await this.getContentfulEntryWithLoggedMigrations();
         return entry.fields.migrationData['en-US'];
     }
 }
