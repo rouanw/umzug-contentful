@@ -13,11 +13,7 @@ export class ContentfulStorage {
   private readonly environmentId: string;
   private readonly spaceId: string;
 
-  constructor({
-    spaceId,
-    environmentId,
-    contentfulManagementToken
-  }: ContentfulUmzugOptions) {
+  constructor({ spaceId, environmentId, contentfulManagementToken }: ContentfulUmzugOptions) {
     this.client = createClient({
       space: spaceId,
       accessToken: contentfulManagementToken
@@ -44,15 +40,9 @@ export class ContentfulStorage {
     await this.updateLoggedMigrations(updatedMigrations);
   }
 
-  async unlogMigration({
-    name: migrationName
-  }: {
-    name: string;
-  }): Promise<void> {
+  async unlogMigration({ name: migrationName }: { name: string }): Promise<void> {
     const loggedMigrations = await this.executed();
-    const updatedMigrations = loggedMigrations.filter(
-      name => name !== migrationName
-    );
+    const updatedMigrations = loggedMigrations.filter(name => name !== migrationName);
     await this.updateLoggedMigrations(updatedMigrations);
   }
 

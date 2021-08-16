@@ -3,9 +3,7 @@ import { Entry } from "contentful-management/types";
 
 const MIGRATION_CONTENT_TYPE = "Umzug Migration";
 
-async function getContentTypeId(
-  environment: ContentfulEnvironmentAPI
-): Promise<string> {
+async function getContentTypeId(environment: ContentfulEnvironmentAPI): Promise<string> {
   const contentTypes = await environment.getContentTypes({
     name: MIGRATION_CONTENT_TYPE
   });
@@ -30,9 +28,7 @@ async function getContentTypeId(
   return contentType.sys.id;
 }
 
-export async function getEntry(
-  environment: ContentfulEnvironmentAPI
-): Promise<Entry> {
+export async function getEntry(environment: ContentfulEnvironmentAPI): Promise<Entry> {
   const contentTypeId = await getContentTypeId(environment);
   const entries = await environment.getEntries({ content_type: contentTypeId });
   if (entries.items.length === 1) {

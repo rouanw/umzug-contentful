@@ -6,17 +6,13 @@ import { ContentType, Entry } from "contentful-management/types";
 
 const MIGRATION_CONTENT_TYPE = "Umzug Migration";
 
-const getOrCreateMigrationContentType = async (
-  environment: ContentfulEnvironmentAPI
-) => {
+const getOrCreateMigrationContentType = async (environment: ContentfulEnvironmentAPI) => {
   let contentType;
   const contentTypes = await environment.getContentTypes({
     name: MIGRATION_CONTENT_TYPE
   });
   if (contentTypes.items.length > 1) {
-    throw new Error(
-      "There is more than one content model for migrations. Please remove any duplicates in Contentful."
-    );
+    throw new Error("There is more than one content model for migrations. Please remove any duplicates in Contentful.");
   }
   if (contentTypes.items.length === 1) {
     contentType = contentTypes.items[0];
@@ -48,9 +44,7 @@ async function getOrCreateMigrationEntry(
     content_type: contentType.sys.id
   });
   if (entries.items.length > 1) {
-    throw new Error(
-      "There seems to be more than one migration record. Please remove any duplicates in Contentful"
-    );
+    throw new Error("There seems to be more than one migration record. Please remove any duplicates in Contentful");
   }
   if (entries.items.length === 0) {
     entry = await environment.createEntry(contentType.sys.id, {
