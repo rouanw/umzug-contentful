@@ -39,17 +39,15 @@ describe('ContentfulStorage', () => {
         const storage = new ContentfulStorage(env);
 
         test('removes entry', async () => {
-            await initContentfulEntry(['m1.txt'])
+            await initContentfulEntry(['m1.txt']);
             await storage.unlogMigration({ name: 'm1.txt' });
             expect(await getMigrationDataFromStorage()).toEqual([]);
         });
-        // test('does nothing when unlogging non-existent migration', async () => {
-        //     await storage.unlogMigration({ name: 'does-not-exist.txt' });
-        //
-        //     expect(syncer.read()).toEqual({
-        //         'umzug.json': json(['m1.txt']),
-        //     });
-        // });
+        test('does nothing when unlogging non-existent migration', async () => {
+            await initContentfulEntry(['m1.txt']);
+            await storage.unlogMigration({ name: 'does-not-exist.txt' });
+            expect(await getMigrationDataFromStorage()).toEqual(['m1.txt']);
+        });
     });
 /*
     describe('executed', () => {
