@@ -1,15 +1,23 @@
 import { ContentfulStorage } from "..";
-import { getEntry, getContentType } from "../lib/init";
+import { getEntry, getContentType } from "../lib/contentful";
+import { getEnvironment } from './environment';
+import { ContentfulEnvironmentAPI } from "contentful-management/dist/typings/create-environment-api";
 import env from "../.env.json";
 
 describe("ContentfulStorage", () => {
+  let environment: ContentfulEnvironmentAPI;
+
+  beforeEach(async () => {
+    environment = await getEnvironment();
+  });
+
   const getMigrationDataFromStorage = async () => {
-    const entry = await getEntry();
+    const entry = await getEntry(environment);
     return entry.fields.migrationData["en-US"];
   };
 
   const initContentfulEntry = async (content: string[] = []) => {
-    const entry = await getEntry();
+    const entry = await getEntry(environment);
     entry.fields.migrationData["en-US"] = content;
     await entry.update();
   };
@@ -34,17 +42,17 @@ describe("ContentfulStorage", () => {
       expect(await getMigrationDataFromStorage()).toEqual(["m1.txt", "m1.txt"]);
     });
     test("copes when there is no contentful entry for logged migrations", async () => {
-      const entry = await getEntry();
+      const entry = await getEntry(environment);
       await entry.unpublish();
       await entry.delete();
       await storage.logMigration({ name: "m1.txt" });
       expect(await getMigrationDataFromStorage()).toEqual(["m1.txt"]);
     });
     test("copes when there is no contentful content type for logged migrations", async () => {
-      const entry = await getEntry();
+      const entry = await getEntry(environment);
       await entry.unpublish();
       await entry.delete();
-      const contentType = await getContentType();
+      const contentType = await getContentType(environment);
       await contentType.unpublish();
       await contentType.delete();
       await storage.logMigration({ name: "m1.txt" });

@@ -1,15 +1,14 @@
 import { ContentfulEnvironmentAPI } from "contentful-management/dist/typings/create-environment-api";
-import { Entry } from "contentful-management/types";
+import { ContentType, Entry } from "contentful-management/types";
 
 const MIGRATION_CONTENT_TYPE = "Umzug Migration";
 
-async function getContentTypeId(environment: ContentfulEnvironmentAPI): Promise<string> {
+export async function getContentType(environment: ContentfulEnvironmentAPI): Promise<ContentType> {
   const contentTypes = await environment.getContentTypes({
     name: MIGRATION_CONTENT_TYPE,
   });
   if (contentTypes.items.length === 1) {
-    const contentType = contentTypes.items[0];
-    return contentType.sys.id;
+    return contentTypes.items[0];
   }
   const contentType = await environment.createContentType({
     name: MIGRATION_CONTENT_TYPE,
@@ -25,11 +24,12 @@ async function getContentTypeId(environment: ContentfulEnvironmentAPI): Promise<
     description: "Field to hold programmatic migration data. Do not edit.",
   });
   await contentType.publish();
-  return contentType.sys.id;
+  return contentType;
 }
 
 export async function getEntry(environment: ContentfulEnvironmentAPI): Promise<Entry> {
-  const contentTypeId = await getContentTypeId(environment);
+  const contentType = await getContentType(environment);
+  const contentTypeId = contentType.sys.id;
   const entries = await environment.getEntries({ content_type: contentTypeId });
   if (entries.items.length === 1) {
     return entries.items[0];
