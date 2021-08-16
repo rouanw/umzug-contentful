@@ -47,4 +47,10 @@ export class ContentfulStorage {
         const newMigrationState = [...migrationState, migrationName];
         await this.saveMigrationState(newMigrationState);
     }
+
+    async unlogMigration({ name: migrationName }: {name: string}) : Promise<void> {
+        const migrationState = await this.getMigrationState();
+        const updatedMigrations = migrationState.filter(name => name !== migrationName);
+        await this.saveMigrationState(updatedMigrations);
+    }
 }

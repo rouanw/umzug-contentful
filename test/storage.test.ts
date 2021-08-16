@@ -8,13 +8,13 @@ describe('ContentfulStorage', () => {
         return entry.fields.migrationData['en-US'];
     };
 
-    describe('logMigration', () => {
-        const initContentfulEntry = async (content: string[] = []) => {
-            const entry = await getEntry();
-            entry.fields.migrationData['en-US'] = content;
-            await entry.update();
-        }
+    const initContentfulEntry = async (content: string[] = []) => {
+        const entry = await getEntry();
+        entry.fields.migrationData['en-US'] = content;
+        await entry.update();
+    }
 
+    describe('logMigration', () => {
         const storage = new ContentfulStorage(env);
 
         test('adds a migration entry', async () => {
@@ -28,35 +28,30 @@ describe('ContentfulStorage', () => {
             expect(await getMigrationDataFromStorage()).toEqual(['00.txt', 'm1.txt']);
         });
         test(`doesn't dedupe`, async () => {
+            await initContentfulEntry();
             await storage.logMigration({ name: 'm1.txt' });
             await storage.logMigration({ name: 'm1.txt' });
             expect(await getMigrationDataFromStorage()).toEqual(['m1.txt', 'm1.txt']);
         });
     });
-/*
+
     describe('unlogMigration', () => {
-        const syncer = fsSyncer(path.join(__dirname, '../generated/JSONStorage/unlogMigration'), {
-            'umzug.json': `["m1.txt"]`,
-        });
-        beforeEach(syncer.sync); // Wipes out the directory
-        const storage = new JSONStorage({ path: path.join(syncer.baseDir, 'umzug.json') });
+        const storage = new ContentfulStorage(env);
 
         test('removes entry', async () => {
+            await initContentfulEntry(['m1.txt'])
             await storage.unlogMigration({ name: 'm1.txt' });
-            expect(syncer.read()).toEqual({
-                'umzug.json': '[]',
-            });
+            expect(await getMigrationDataFromStorage()).toEqual([]);
         });
-
-        test('does nothing when unlogging non-existent migration', async () => {
-            await storage.unlogMigration({ name: 'does-not-exist.txt' });
-
-            expect(syncer.read()).toEqual({
-                'umzug.json': json(['m1.txt']),
-            });
-        });
+        // test('does nothing when unlogging non-existent migration', async () => {
+        //     await storage.unlogMigration({ name: 'does-not-exist.txt' });
+        //
+        //     expect(syncer.read()).toEqual({
+        //         'umzug.json': json(['m1.txt']),
+        //     });
+        // });
     });
-
+/*
     describe('executed', () => {
         const syncer = fsSyncer(path.join(__dirname, '../generated/JSONStorage/executed'), {});
         beforeEach(syncer.sync); // Wipes out the directory
