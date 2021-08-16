@@ -49,21 +49,18 @@ describe('ContentfulStorage', () => {
             expect(await getMigrationDataFromStorage()).toEqual(['m1.txt']);
         });
     });
-/*
-    describe('executed', () => {
-        const syncer = fsSyncer(path.join(__dirname, '../generated/JSONStorage/executed'), {});
-        beforeEach(syncer.sync); // Wipes out the directory
 
-        const storage = new JSONStorage({ path: path.join(syncer.baseDir, 'umzug.json') });
+    describe('executed', () => {
+        const storage = new ContentfulStorage(env);
 
         test('returns empty array when no migrations are logged', async () => {
+            await initContentfulEntry([]);
             expect(await storage.executed()).toEqual([]);
         });
-
         test('returns logged migration', async () => {
+            await initContentfulEntry();
             await storage.logMigration({ name: 'm1.txt' });
             expect(await storage.executed()).toEqual(['m1.txt']);
         });
     });
- */
 });

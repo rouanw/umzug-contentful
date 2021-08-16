@@ -53,4 +53,8 @@ export class ContentfulStorage {
         const updatedMigrations = migrationState.filter(name => name !== migrationName);
         await this.saveMigrationState(updatedMigrations);
     }
+
+    async executed() {
+        return this.getMigrationState();
+    }
 }
