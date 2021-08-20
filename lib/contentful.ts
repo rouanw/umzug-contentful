@@ -1,9 +1,8 @@
-import { ContentfulEnvironmentAPI } from "contentful-management/dist/typings/create-environment-api";
-import { ContentType, Entry } from "contentful-management/types";
+import { ContentType, Entry, Environment } from "contentful-management/types";
 
 const MIGRATION_CONTENT_TYPE = "Umzug Migration";
 
-export async function getContentType(environment: ContentfulEnvironmentAPI): Promise<ContentType> {
+export async function getContentType(environment: Environment): Promise<ContentType> {
   const contentTypes = await environment.getContentTypes({
     name: MIGRATION_CONTENT_TYPE,
   });
@@ -27,7 +26,7 @@ export async function getContentType(environment: ContentfulEnvironmentAPI): Pro
   return contentType;
 }
 
-export async function getEntry(environment: ContentfulEnvironmentAPI): Promise<Entry> {
+export async function getEntry(environment: Environment): Promise<Entry> {
   const contentType = await getContentType(environment);
   const contentTypeId = contentType.sys.id;
   const entries = await environment.getEntries({ content_type: contentTypeId });

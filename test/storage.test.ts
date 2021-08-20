@@ -1,11 +1,11 @@
+import { Environment } from "contentful-management/types";
 import { ContentfulStorage } from "..";
 import { getEntry, getContentType } from "../lib/contentful";
 import { getEnvironment } from './environment';
-import { ContentfulEnvironmentAPI } from "contentful-management/dist/typings/create-environment-api";
 import env from "../.env.json";
 
 describe("ContentfulStorage", () => {
-  let environment: ContentfulEnvironmentAPI;
+  let environment: Environment;
 
   beforeEach(async () => {
     environment = await getEnvironment();
