@@ -2,7 +2,7 @@ import { createClient } from "contentful-management";
 import { Entry } from "contentful-management/types";
 import { getEntry } from "./lib/contentful";
 
-export interface ContentfulUmzugOptions {
+export interface UmzugContentfulOptions {
   spaceId: string;
   environmentId: string;
   contentfulManagementToken: string;
@@ -13,7 +13,7 @@ export class ContentfulStorage {
   private readonly environmentId: string;
   private readonly spaceId: string;
 
-  constructor({ spaceId, environmentId, contentfulManagementToken }: ContentfulUmzugOptions) {
+  constructor({ spaceId, environmentId, contentfulManagementToken }: UmzugContentfulOptions) {
     this.client = createClient({
       space: spaceId,
       accessToken: contentfulManagementToken,
