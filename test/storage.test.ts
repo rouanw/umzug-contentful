@@ -1,5 +1,5 @@
 import { Environment } from "contentful-management/types";
-import { ContentfulStorage } from "..";
+import { ContentfulStorage } from "../index";
 import { getEntry, getContentType } from "../lib/contentful";
 import { getEnvironment } from './environment';
 import env from "../.env.json";
