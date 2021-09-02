@@ -11,6 +11,7 @@ export async function getContentType(environment: Environment): Promise<ContentT
   }
   const contentType = await environment.createContentType({
     name: MIGRATION_CONTENT_TYPE,
+    displayField: "title",
     fields: [
       {
         id: "title",

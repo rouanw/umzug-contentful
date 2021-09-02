@@ -58,12 +58,18 @@ describe("ContentfulStorage", () => {
       await storage.logMigration({ name: "m1.txt" });
       expect(await getMigrationDataFromStorage()).toEqual(["m1.txt"]);
     });
-    test("gives the entry a useful display field", async () => {
+    test("gives the entry a useful title", async () => {
       await deleteContentType(environment);
       await storage.logMigration({ name: "m1.txt" });
       const entry = await getEntry(environment);
       expect(entry.fields.title).toBeDefined();
       expect(entry.fields.title['en-US']).toEqual("Programmatic Migration Data");
+    });
+    test("sets the title as the display field of the content type", async () => {
+      await deleteContentType(environment);
+      await storage.logMigration({ name: "m1.txt" });
+      const contentType = await getContentType(environment);
+      expect(contentType.displayField).toEqual("title");
     });
   });
 
