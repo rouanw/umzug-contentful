@@ -11,7 +11,7 @@ export async function getEnvironment() : Promise<Environment> {
   return space.getEnvironment(env.environmentId);
 }
 
-async function deleteEntry(environment: Environment) : Promise<void> {
+export async function deleteEntry(environment: Environment) : Promise<void> {
   const entry = await getEntry(environment);
   if (entry.isPublished()) {
     await entry.unpublish();

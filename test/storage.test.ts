@@ -1,7 +1,7 @@
 import { Environment } from "contentful-management/types";
 import { ContentfulStorage } from "../index";
 import { getEntry, getContentType } from "../lib/contentful";
-import { deleteContentType, getEnvironment } from "./environment";
+import { deleteContentType, deleteEntry, getEnvironment } from "./environment";
 import env from "../.env.json";
 
 describe("ContentfulStorage", () => {
@@ -99,6 +99,16 @@ describe("ContentfulStorage", () => {
       await initContentfulEntry();
       await storage.logMigration({ name: "m1.txt" });
       expect(await storage.executed()).toEqual(["m1.txt"]);
+    });
+  });
+
+  describe("customisation", () => {
+    test("the entry ID should be customisable", async () => {
+      const storage = new ContentfulStorage({ ...env, migrationEntryId: "ada" });
+      await deleteEntry(environment);
+      await storage.logMigration({ name: "m1.txt" });
+      const entry = await getEntry(environment);
+      expect(entry.sys.id).toEqual("ada");
     });
   });
 });
