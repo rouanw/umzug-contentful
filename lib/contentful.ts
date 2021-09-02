@@ -34,7 +34,7 @@ export async function getContentType(environment: Environment): Promise<ContentT
   return contentType;
 }
 
-export async function getEntry(environment: Environment): Promise<Entry> {
+export async function getEntry(environment: Environment, locale = "en-US"): Promise<Entry> {
   const contentType = await getContentType(environment);
   const contentTypeId = contentType.sys.id;
   const entries = await environment.getEntries({ content_type: contentTypeId });
@@ -43,8 +43,8 @@ export async function getEntry(environment: Environment): Promise<Entry> {
   }
   const entry = await environment.createEntry(contentTypeId, {
     fields: {
-      title: { "en-US": "Programmatic Migration Data" },
-      migrationData: { "en-US": [] },
+      title: { [locale]: "Programmatic Migration Data" },
+      migrationData: { [locale]: [] },
     },
   });
   await entry.publish();

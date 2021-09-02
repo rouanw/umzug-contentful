@@ -6,31 +6,34 @@ export interface UmzugContentfulOptions {
   spaceId: string;
   environmentId: string;
   contentfulManagementToken: string;
+  locale?: string;
 }
 
 export class ContentfulStorage {
   private client;
   private readonly environmentId: string;
   private readonly spaceId: string;
+  private readonly locale: string;
 
-  constructor({ spaceId, environmentId, contentfulManagementToken }: UmzugContentfulOptions) {
+  constructor({ spaceId, environmentId, contentfulManagementToken, locale = "en-US" }: UmzugContentfulOptions) {
     this.client = createClient({
       space: spaceId,
       accessToken: contentfulManagementToken,
     });
     this.environmentId = environmentId;
     this.spaceId = spaceId;
+    this.locale = locale;
   }
 
   private async getContentfulEntryWithLoggedMigrations(): Promise<Entry> {
     const space = await this.client.getSpace(this.spaceId);
     const environment = await space.getEnvironment(this.environmentId);
-    return getEntry(environment);
+    return getEntry(environment, this.locale);
   }
 
   private async updateLoggedMigrations(migrations: string[]) {
     const loggedMigrationsEntry: Entry = await this.getContentfulEntryWithLoggedMigrations();
-    loggedMigrationsEntry.fields.migrationData["en-US"] = migrations;
+    loggedMigrationsEntry.fields.migrationData[this.locale] = migrations;
     await loggedMigrationsEntry.update();
   }
 
@@ -48,6 +51,6 @@ export class ContentfulStorage {
 
   async executed(): Promise<string[]> {
     const entry = await this.getContentfulEntryWithLoggedMigrations();
-    return entry.fields.migrationData["en-US"];
+    return entry.fields.migrationData[this.locale];
   }
 }
