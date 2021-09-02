@@ -1,7 +1,7 @@
 import { Environment } from "contentful-management/types";
 import { ContentfulStorage } from "../index";
 import { getEntry, getContentType } from "../lib/contentful";
-import { getEnvironment } from './environment';
+import { deleteContentType, getEnvironment } from "./environment";
 import env from "../.env.json";
 
 describe("ContentfulStorage", () => {
@@ -57,6 +57,13 @@ describe("ContentfulStorage", () => {
       await contentType.delete();
       await storage.logMigration({ name: "m1.txt" });
       expect(await getMigrationDataFromStorage()).toEqual(["m1.txt"]);
+    });
+    test("gives the entry a useful display field", async () => {
+      await deleteContentType(environment);
+      await storage.logMigration({ name: "m1.txt" });
+      const entry = await getEntry(environment);
+      expect(entry.fields.title).toBeDefined();
+      expect(entry.fields.title['en-US']).toEqual("Programmatic Migration Data");
     });
   });
 

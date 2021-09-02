@@ -13,6 +13,13 @@ export async function getContentType(environment: Environment): Promise<ContentT
     name: MIGRATION_CONTENT_TYPE,
     fields: [
       {
+        id: "title",
+        name: "Title",
+        required: true,
+        localized: false,
+        type: "Symbol",
+      },
+      {
         id: "migrationData",
         name: "Migration Data",
         required: true,
@@ -35,6 +42,7 @@ export async function getEntry(environment: Environment): Promise<Entry> {
   }
   const entry = await environment.createEntry(contentTypeId, {
     fields: {
+      title: { "en-US": "Programmatic Migration Data" },
       migrationData: { "en-US": [] },
     },
   });
