@@ -2,14 +2,26 @@ import { ContentType, Entry, Environment } from "contentful-management/types";
 
 const MIGRATION_CONTENT_TYPE = "Umzug Migration";
 
-export async function getContentType(environment: Environment): Promise<ContentType> {
+interface GetEntryOptions {
+  locale?: string;
+  migrationEntryId?: string;
+  migrationContentTypeId?: string;
+}
+
+const defaultGetEntryOptions = {
+  locale: "en-US",
+  migrationEntryId: "umzugMigrationDataEntry",
+  migrationContentTypeId: "umzugMigrationData"
+};
+
+export async function getContentType(environment: Environment, contentTypeId = defaultGetEntryOptions.migrationContentTypeId): Promise<ContentType> {
   const contentTypes = await environment.getContentTypes({
-    name: MIGRATION_CONTENT_TYPE,
+    name: MIGRATION_CONTENT_TYPE
   });
   if (contentTypes.items.length === 1) {
     return contentTypes.items[0];
   }
-  const contentType = await environment.createContentType({
+  const contentType = await environment.createContentTypeWithId(contentTypeId, {
     name: MIGRATION_CONTENT_TYPE,
     displayField: "title",
     fields: [
@@ -18,38 +30,28 @@ export async function getContentType(environment: Environment): Promise<ContentT
         name: "Title",
         required: true,
         localized: false,
-        type: "Symbol",
+        type: "Symbol"
       },
       {
         id: "migrationData",
         name: "Migration Data",
         required: true,
         localized: false,
-        type: "Object",
-      },
+        type: "Object"
+      }
     ],
-    description: "Field to hold programmatic migration data. Do not edit.",
+    description: "Field to hold programmatic migration data. Do not edit."
   });
   await contentType.publish();
   return contentType;
 }
 
-interface GetEntryOptions {
-  migrationEntryId?: string;
-  locale?: string;
-}
-
-const defaultGetEntryOptions = {
-  locale: "en-US",
-  migrationEntryId: "umzugMigrationDataEntry",
-};
-
 export async function getEntry(environment: Environment, options: GetEntryOptions = {}): Promise<Entry> {
-  const { migrationEntryId, locale } = {
+  const { migrationEntryId, migrationContentTypeId, locale } = {
     ...defaultGetEntryOptions,
-    ...options,
+    ...options
   };
-  const contentType = await getContentType(environment);
+  const contentType = await getContentType(environment, migrationContentTypeId);
   const contentTypeId = contentType.sys.id;
   const entries = await environment.getEntries({ content_type: contentTypeId });
   if (entries.items.length === 1) {
@@ -58,8 +60,8 @@ export async function getEntry(environment: Environment, options: GetEntryOption
   const entry = await environment.createEntryWithId(contentTypeId, migrationEntryId, {
     fields: {
       title: { [locale]: "Programmatic Migration Data" },
-      migrationData: { [locale]: [] },
-    },
+      migrationData: { [locale]: [] }
+    }
   });
   await entry.publish();
   return entry;

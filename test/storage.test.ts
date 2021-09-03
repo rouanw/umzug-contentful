@@ -110,5 +110,12 @@ describe("ContentfulStorage", () => {
       const entry = await getEntry(environment);
       expect(entry.sys.id).toEqual("ada");
     });
+    test("the content type ID should be customisable", async () => {
+      const storage = new ContentfulStorage({ ...env, migrationContentTypeId: "ada" });
+      await deleteContentType(environment);
+      await storage.logMigration({ name: "m1.txt" });
+      const contentType = await getContentType(environment, "ada");
+      expect(contentType.sys.id).toEqual("ada");
+    });
   });
 });
