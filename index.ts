@@ -17,7 +17,7 @@ export class ContentfulStorage {
   private readonly spaceId: string;
   private readonly locale: string;
   private readonly migrationEntryId: string;
-  private migrationContentTypeId: string;
+  private readonly migrationContentTypeId: string;
 
   constructor({
     spaceId,
