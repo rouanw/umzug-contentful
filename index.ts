@@ -17,10 +17,16 @@ export class ContentfulStorage {
   private readonly locale: string;
   private readonly migrationEntryId: string;
 
-  constructor({ spaceId, environmentId, contentfulManagementToken, locale = "en-US", migrationEntryId = "umzugMigrationDataEntry" }: UmzugContentfulOptions) {
+  constructor({
+                spaceId,
+                environmentId,
+                contentfulManagementToken,
+                locale = "en-US",
+                migrationEntryId = "umzugMigrationDataEntry"
+              }: UmzugContentfulOptions) {
     this.client = createClient({
       space: spaceId,
-      accessToken: contentfulManagementToken,
+      accessToken: contentfulManagementToken
     });
     this.environmentId = environmentId;
     this.spaceId = spaceId;
@@ -31,7 +37,7 @@ export class ContentfulStorage {
   private async getContentfulEntryWithLoggedMigrations(): Promise<Entry> {
     const space = await this.client.getSpace(this.spaceId);
     const environment = await space.getEnvironment(this.environmentId);
-    return getEntry(environment, this.locale, this.migrationEntryId);
+    return getEntry(environment, { locale: this.locale, migrationEntryId: this.migrationEntryId });
   }
 
   private async updateLoggedMigrations(migrations: string[]) {

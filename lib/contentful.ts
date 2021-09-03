@@ -34,7 +34,21 @@ export async function getContentType(environment: Environment): Promise<ContentT
   return contentType;
 }
 
-export async function getEntry(environment: Environment, locale = "en-US", migrationEntryId = "umzugMigrationDataEntry"): Promise<Entry> {
+interface GetEntryOptions {
+  migrationEntryId?: string;
+  locale?: string;
+}
+
+const defaultGetEntryOptions = {
+  locale: "en-US",
+  migrationEntryId: "umzugMigrationDataEntry",
+};
+
+export async function getEntry(environment: Environment, options: GetEntryOptions = {}): Promise<Entry> {
+  const { migrationEntryId, locale } = {
+    ...defaultGetEntryOptions,
+    ...options,
+  };
   const contentType = await getContentType(environment);
   const contentTypeId = contentType.sys.id;
   const entries = await environment.getEntries({ content_type: contentTypeId });
