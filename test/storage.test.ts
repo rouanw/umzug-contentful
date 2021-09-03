@@ -63,7 +63,7 @@ describe("ContentfulStorage", () => {
       await storage.logMigration({ name: "m1.txt" });
       const entry = await getEntry(environment);
       expect(entry.fields.title).toBeDefined();
-      expect(entry.fields.title['en-US']).toEqual("Programmatic Migration Data");
+      expect(entry.fields.title["en-US"]).toEqual("Programmatic Migration Data");
     });
     test("sets the title as the display field of the content type", async () => {
       await deleteContentType(environment);

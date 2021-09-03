@@ -11,12 +11,15 @@ interface GetEntryOptions {
 const defaultGetEntryOptions = {
   locale: "en-US",
   migrationEntryId: "umzugMigrationDataEntry",
-  migrationContentTypeId: "umzugMigrationData"
+  migrationContentTypeId: "umzugMigrationData",
 };
 
-export async function getContentType(environment: Environment, contentTypeId = defaultGetEntryOptions.migrationContentTypeId): Promise<ContentType> {
+export async function getContentType(
+  environment: Environment,
+  contentTypeId = defaultGetEntryOptions.migrationContentTypeId
+): Promise<ContentType> {
   const contentTypes = await environment.getContentTypes({
-    name: MIGRATION_CONTENT_TYPE
+    name: MIGRATION_CONTENT_TYPE,
   });
   if (contentTypes.items.length === 1) {
     return contentTypes.items[0];
@@ -30,17 +33,17 @@ export async function getContentType(environment: Environment, contentTypeId = d
         name: "Title",
         required: true,
         localized: false,
-        type: "Symbol"
+        type: "Symbol",
       },
       {
         id: "migrationData",
         name: "Migration Data",
         required: true,
         localized: false,
-        type: "Object"
-      }
+        type: "Object",
+      },
     ],
-    description: "Field to hold programmatic migration data. Do not edit."
+    description: "Field to hold programmatic migration data. Do not edit.",
   });
   await contentType.publish();
   return contentType;
@@ -49,7 +52,7 @@ export async function getContentType(environment: Environment, contentTypeId = d
 export async function getEntry(environment: Environment, options: GetEntryOptions = {}): Promise<Entry> {
   const { migrationEntryId, migrationContentTypeId, locale } = {
     ...defaultGetEntryOptions,
-    ...options
+    ...options,
   };
   const contentType = await getContentType(environment, migrationContentTypeId);
   const contentTypeId = contentType.sys.id;
@@ -60,8 +63,8 @@ export async function getEntry(environment: Environment, options: GetEntryOption
   const entry = await environment.createEntryWithId(contentTypeId, migrationEntryId, {
     fields: {
       title: { [locale]: "Programmatic Migration Data" },
-      migrationData: { [locale]: [] }
-    }
+      migrationData: { [locale]: [] },
+    },
   });
   await entry.publish();
   return entry;
