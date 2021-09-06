@@ -7,8 +7,9 @@ import env from "../.env.json";
 describe("ContentfulStorage", () => {
   let environment: Environment;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     environment = await getEnvironment();
+    await getEntry(environment);
   });
 
   const getMigrationDataFromStorage = async () => {
@@ -42,19 +43,12 @@ describe("ContentfulStorage", () => {
       expect(await getMigrationDataFromStorage()).toEqual(["m1.txt", "m1.txt"]);
     });
     test("copes when there is no contentful entry for logged migrations", async () => {
-      const entry = await getEntry(environment);
-      await entry.unpublish();
-      await entry.delete();
+      await deleteEntry(environment);
       await storage.logMigration({ name: "m1.txt" });
       expect(await getMigrationDataFromStorage()).toEqual(["m1.txt"]);
     });
     test("copes when there is no contentful content type for logged migrations", async () => {
-      const entry = await getEntry(environment);
-      await entry.unpublish();
-      await entry.delete();
-      const contentType = await getContentType(environment);
-      await contentType.unpublish();
-      await contentType.delete();
+      await deleteContentType(environment);
       await storage.logMigration({ name: "m1.txt" });
       expect(await getMigrationDataFromStorage()).toEqual(["m1.txt"]);
     });
@@ -104,15 +98,15 @@ describe("ContentfulStorage", () => {
 
   describe("customisation", () => {
     test("the entry ID should be customisable", async () => {
-      const storage = new ContentfulStorage({ ...env, migrationEntryId: "ada" });
       await deleteEntry(environment);
+      const storage = new ContentfulStorage({ ...env, migrationEntryId: "ada" });
       await storage.logMigration({ name: "m1.txt" });
-      const entry = await getEntry(environment);
+      const entry = await getEntry(environment, { migrationEntryId: "ada" });
       expect(entry.sys.id).toEqual("ada");
     });
     test("the content type ID should be customisable", async () => {
-      const storage = new ContentfulStorage({ ...env, migrationContentTypeId: "ada" });
       await deleteContentType(environment);
+      const storage = new ContentfulStorage({ ...env, migrationContentTypeId: "ada" });
       await storage.logMigration({ name: "m1.txt" });
       const contentType = await getContentType(environment, "ada");
       expect(contentType.sys.id).toEqual("ada");

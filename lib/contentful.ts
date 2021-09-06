@@ -18,34 +18,33 @@ export async function getContentType(
   environment: Environment,
   contentTypeId = defaultGetEntryOptions.migrationContentTypeId
 ): Promise<ContentType> {
-  const contentTypes = await environment.getContentTypes({
-    name: MIGRATION_CONTENT_TYPE,
-  });
-  if (contentTypes.items.length === 1) {
-    return contentTypes.items[0];
+  let contentType;
+  try {
+    contentType = await environment.getContentType(contentTypeId);
+  } catch (error) {
+    contentType = await environment.createContentTypeWithId(contentTypeId, {
+      name: MIGRATION_CONTENT_TYPE,
+      displayField: "title",
+      fields: [
+        {
+          id: "title",
+          name: "Title",
+          required: true,
+          localized: false,
+          type: "Symbol",
+        },
+        {
+          id: "migrationData",
+          name: "Migration Data",
+          required: true,
+          localized: false,
+          type: "Object",
+        },
+      ],
+      description: "Field to hold programmatic migration data. Do not edit.",
+    });
+    await contentType.publish();
   }
-  const contentType = await environment.createContentTypeWithId(contentTypeId, {
-    name: MIGRATION_CONTENT_TYPE,
-    displayField: "title",
-    fields: [
-      {
-        id: "title",
-        name: "Title",
-        required: true,
-        localized: false,
-        type: "Symbol",
-      },
-      {
-        id: "migrationData",
-        name: "Migration Data",
-        required: true,
-        localized: false,
-        type: "Object",
-      },
-    ],
-    description: "Field to hold programmatic migration data. Do not edit.",
-  });
-  await contentType.publish();
   return contentType;
 }
 
@@ -54,18 +53,18 @@ export async function getEntry(environment: Environment, options: GetEntryOption
     ...defaultGetEntryOptions,
     ...options,
   };
-  const contentType = await getContentType(environment, migrationContentTypeId);
-  const contentTypeId = contentType.sys.id;
-  const entries = await environment.getEntries({ content_type: contentTypeId });
-  if (entries.items.length === 1) {
-    return entries.items[0];
+  let entry;
+  try {
+    entry = await environment.getEntry(migrationEntryId);
+  } catch (error) {
+    await getContentType(environment, migrationContentTypeId);
+    entry = await environment.createEntryWithId(migrationContentTypeId, migrationEntryId, {
+      fields: {
+        title: { [locale]: "Programmatic Migration Data" },
+        migrationData: { [locale]: [] },
+      },
+    });
+    await entry.publish();
   }
-  const entry = await environment.createEntryWithId(contentTypeId, migrationEntryId, {
-    fields: {
-      title: { [locale]: "Programmatic Migration Data" },
-      migrationData: { [locale]: [] },
-    },
-  });
-  await entry.publish();
   return entry;
 }

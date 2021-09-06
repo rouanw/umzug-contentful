@@ -20,8 +20,16 @@ export async function deleteEntry(environment: Environment): Promise<void> {
 }
 
 export async function deleteContentType(environment: Environment): Promise<void> {
-  await deleteEntry(environment);
   const contentType = await getContentType(environment);
-  await contentType.unpublish();
+  const entries = await environment.getEntries({ content_type: contentType.sys.id });
+  for (const entry of entries.items) {
+    if (entry.isPublished()) {
+      await entry.unpublish();
+    }
+    await entry.delete();
+  }
+  if (contentType.isPublished()) {
+    await contentType.unpublish();
+  }
   await contentType.delete();
 }
