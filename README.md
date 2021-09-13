@@ -43,6 +43,45 @@ locale                      | string    | false     |`en-US`        | Locale to 
 migrationEntryId            | string    | false     | `umzugMigrationDataEntry` | ID of the entry migration data will be stored in
 migrationContentTypeId      | string    | false     | `umzugMigrationData` | ID of the content type migration data will be stored against
 
+## Use with `contentful-migration`
+
+You'll likely want to avoid boilerplate in your individual migration scripts. You can do this by passing a `runMigration` function to `contentful-migration` via the `umzug` context:
+
+```typescript
+import { Umzug } from "umzug";
+import { ContentfulStorage } from "umzug-contentful";
+import { runMigration, MigrationFunction } from "contentful-migration";
+import * as fs from "fs";
+
+async function migrate(migrationFunction: MigrationFunction): Promise<void> {
+  await runMigration({
+    migrationFunction,
+    spaceId: "abc123",
+    environmentId: "master",
+    contentfulManagementToken: "my-secret-token",
+  });
+}
+
+const umzug = new Umzug({
+  // ... other options
+  context: { migrate }, // do not pass a function as the context, because umzug will call it instead of passing it through
+});
+
+if (require.main === module) {
+  void umzug.runAsCLI();
+}
+```
+
+And then in your migration script:
+
+```typescript
+export const up = async ({ context }) => {
+  await context.migrate((migration) => {
+    // write your migration
+  });
+}
+```
+
 ## License
 
 MIT
