@@ -4,6 +4,8 @@
 
 Umzug is the migration tool that powers [sequelize](https://www.npmjs.com/package/sequelize). Umzug Contentful provides a Storage provider for umzug that allows your migration metadata to be stored in Contentful so that you can easily run stateful migrations on your Contentful data, probably using [contentful-migration](https://github.com/contentful/contentful-migration).
 
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/2362668/133118293-432dbe54-029d-4d4a-b743-765e57624d57.png">
+
 ## Installation
 
 ```shell
