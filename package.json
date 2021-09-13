@@ -1,6 +1,6 @@
 {
   "name": "umzug-contentful",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Umzug custom storage provider that stores migration data in Contentful",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
