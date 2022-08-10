@@ -9,10 +9,8 @@ Umzug is the migration tool that powers [sequelize](https://www.npmjs.com/packag
 ## Installation
 
 ```shell
-npm install -D umzug@beta umzug-contentful
+npm install -D umzug umzug-contentful
 ```
-
-Please note that this library was developed against `umzug` v3, which is currently in beta. v2 should work but this has not been tested.
 
 ## Usage
 
