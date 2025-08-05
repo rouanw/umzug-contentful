@@ -13,7 +13,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write '**/*.ts'",
     "check-format": "prettier --check '**/*.ts'",
-    "prepublishOnly": "npm run lint && npm test && npm run build",
+    "prepublishOnly": "npm run build",
     "prepare": "husky install"
   },
   "repository": {

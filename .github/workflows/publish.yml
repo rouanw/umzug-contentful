@@ -36,9 +36,6 @@ jobs:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
           CONTENTFUL_ENVIRONMENT_ID: ${{ vars.CONTENTFUL_ENVIRONMENT_ID }}
 
-      - name: Build package
-        run: npm run build
-
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         env:
