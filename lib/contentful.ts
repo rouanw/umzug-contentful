@@ -16,11 +16,12 @@ const defaultGetEntryOptions = {
 
 export async function getContentType(
   environment: Environment,
-  contentTypeId = defaultGetEntryOptions.migrationContentTypeId
+  contentTypeId = defaultGetEntryOptions.migrationContentTypeId,
 ): Promise<ContentType> {
   let contentType;
   try {
     contentType = await environment.getContentType(contentTypeId);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     contentType = await environment.createContentTypeWithId(contentTypeId, {
       name: MIGRATION_CONTENT_TYPE,
@@ -56,6 +57,7 @@ export async function getEntry(environment: Environment, options: GetEntryOption
   let entry;
   try {
     entry = await environment.getEntry(migrationEntryId);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     await getContentType(environment, migrationContentTypeId);
     entry = await environment.createEntryWithId(migrationContentTypeId, migrationEntryId, {
