@@ -1,6 +1,18 @@
 import { createClient } from "contentful-management";
 import { Environment } from "contentful-management/types";
-import env from "../.env.json";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+if (!process.env.CONTENTFUL_MANAGEMENT_TOKEN || !process.env.CONTENTFUL_SPACE_ID || !process.env.CONTENTFUL_ENVIRONMENT_ID) {
+  throw new Error('Required environment variables are missing. Make sure you have a .env file with CONTENTFUL_MANAGEMENT_TOKEN, CONTENTFUL_SPACE_ID, and CONTENTFUL_ENVIRONMENT_ID');
+}
+
+const env = {
+  contentfulManagementToken: process.env.CONTENTFUL_MANAGEMENT_TOKEN as string,
+  spaceId: process.env.CONTENTFUL_SPACE_ID as string,
+  environmentId: process.env.CONTENTFUL_ENVIRONMENT_ID as string
+};
 import { getContentType, getEntry } from "../lib/contentful";
 
 export async function getEnvironment(): Promise<Environment> {

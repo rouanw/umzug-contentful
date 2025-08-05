@@ -41,6 +41,7 @@
     "@tsconfig/recommended": "^1.0.1",
     "@types/jest": "^26.0.24",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
+    "dotenv": "^17.2.1",
     "eslint": "^7.31.0",
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^7.0.0",
