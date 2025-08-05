@@ -48,6 +48,6 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "contentful-management": "^7.31.0"
+    "contentful-management": "^11.54.4"
   }
 }
