@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/rouanw/umzug-contentful#readme",
   "devDependencies": {
-    "@commitlint/cli": "^12.1.4",
+    "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^12.1.4",
     "@tsconfig/recommended": "^1.0.1",
     "@types/jest": "^26.0.24",
